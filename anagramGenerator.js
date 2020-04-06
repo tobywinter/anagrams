@@ -1,32 +1,37 @@
 const VariantTableGenerator = require("./variantTableGenerator");
 
-function anagramGenerator(word = "") {
-  let anagrams = [];
-  if (word.length >= 1) anagrams.push(word);
-
-  if (word.length >= 2) {
-    let letters = word.split("");
-    letters.reverse();
-    anagrams.push(letters.join(""));
+class AnagramGenerator {
+  constructor() {
+    this.anagrams = [];
   }
 
-  if (word.length >= 3) {
-    let letters = word.split("");
-    const variantTable = new VariantTableGenerator().generate(word.length);
-    variantTable.forEach((variant) => {
-      let result = buildAnagram(letters, variant);
-      anagrams.push(result);
+  buildAnagram(letters, variant) {
+    let anagram = "";
+    variant.forEach((index) => {
+      anagram += letters[index];
     });
+    return anagram;
   }
-  return anagrams;
+
+  generate(word = "") {
+    if (word.length >= 1) this.anagrams.push(word);
+
+    if (word.length >= 2) {
+      let letters = word.split("");
+      letters.reverse();
+      this.anagrams.push(letters.join(""));
+    }
+
+    if (word.length >= 3) {
+      let letters = word.split("");
+      const variantTable = new VariantTableGenerator().generate(word.length);
+      variantTable.forEach((variant) => {
+        let result = this.buildAnagram(letters, variant);
+        this.anagrams.push(result);
+      });
+    }
+    return this.anagrams;
+  }
 }
 
-function buildAnagram(letters, variant) {
-  let anagram = "";
-  variant.forEach((index) => {
-    anagram += letters[index];
-  });
-  return anagram;
-}
-
-module.exports = anagramGenerator;
+module.exports = AnagramGenerator;

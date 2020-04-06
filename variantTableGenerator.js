@@ -1,5 +1,7 @@
 class VariantTableGenerator {
-  constructor() {}
+  constructor() {
+    this.variants = [];
+  }
 
   getOptions(length) {
     let options = [];
@@ -9,38 +11,44 @@ class VariantTableGenerator {
     return options;
   }
 
-  addVariantSet(variants, length) {
+  addVariantSet(length) {
     for (let index = 0; index < length; index++) {
-      variants.push([index]);
+      this.variants.push([index]);
     }
-    return variants;
+    return this.variants;
   }
 
-  addOptionToVariants(variants, option) {
-    variants.forEach((variant) => {
+  addOptionToVariants(option) {
+    this.variants.forEach((variant) => {
       if (!variant.includes(option)) {
         variant.push(option);
       }
     });
-    return variants;
+    return this.variants;
+  }
+
+  buildVariantSet(options, length) {
+    this.addVariantSet(length);
+
+    for (let index = 0; index < options.length; index++) {
+      this.addOptionToVariants(options[index]);
+    }
   }
 
   generate(length) {
-    let variants = [];
     const options = this.getOptions(length);
-    variants = this.addVariantSet(variants, length);
+    // console.log(options);
+    // console.log(options.reverse());
+    for (let index = 1; index < options.length; index++) {
+      //   options.push(options.shift());
+      this.buildVariantSet(options, length);
+    }
 
-    options.forEach((option) => {
-      variants = this.addOptionToVariants(variants, option);
-    });
+    // this.buildVariantSet(options, length);
 
-    variants = this.addVariantSet(variants, length);
-
-    options.reverse().forEach((option) => {
-      variants = this.addOptionToVariants(variants, option);
-    });
-
-    return variants;
+    this.buildVariantSet(options.reverse(), length);
+    // console.log(this.variants);
+    return this.variants;
   }
 }
 
